@@ -1,4 +1,4 @@
-import { ApplicationRef, Component, ComponentRef, OnChanges, OnInit, SimpleChanges, ViewChild, ViewContainerRef } from '@angular/core';
+import { ApplicationRef, ChangeDetectorRef, Component, ComponentRef, OnChanges, OnInit, SimpleChanges, ViewChild, ViewContainerRef } from '@angular/core';
 import { ModalServiceService } from '../shared/modules/modal/services/modal-service.service';
 import { PopupComponent } from '../popups/popup.component';
 import { ModalHostDirective } from '../shared/modules/modal/directives/modal-host.directive';
@@ -12,7 +12,8 @@ import { ModalHostDirective } from '../shared/modules/modal/directives/modal-hos
 export class TestAComponent implements OnInit {
 
   constructor(
-    private modalService: ModalServiceService
+    private modalService: ModalServiceService,
+    private cdr: ChangeDetectorRef
   ) {}
 
   ngOnInit(): void {

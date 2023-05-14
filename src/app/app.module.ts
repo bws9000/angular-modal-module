@@ -6,6 +6,7 @@ import { BrowserAnimationsModule } from "@angular/platform-browser/animations";
 import { TestAComponent } from './test-a/test-a.component';
 import { PopupComponent } from './popups/popup.component';
 import { ModalModule } from './shared/modules/modal/modal.module';
+import { RouterModule, Routes } from '@angular/router';
 @NgModule({
   declarations: [
     AppComponent,
@@ -13,8 +14,10 @@ import { ModalModule } from './shared/modules/modal/modal.module';
     PopupComponent
   ],
   imports: [
+    RouterModule.forRoot([]),
     BrowserModule,
     BrowserAnimationsModule,
+    RouterModule,
     ModalModule
   ],
   providers: [],

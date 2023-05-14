@@ -1,51 +1,68 @@
-import { DOCUMENT } from '@angular/common';
-import { ApplicationRef, ComponentFactoryResolver, ComponentRef, ElementRef, Inject, Injectable, OnInit, Renderer2, ViewChild, ViewChildren, ViewContainerRef } from '@angular/core';
-import { AppComponent } from 'src/app/app.component';
+import {
+  ApplicationRef,
+  ComponentRef,
+  Injectable,
+  ViewContainerRef,
+} from '@angular/core';
 import { ModalContainerComponent } from '../components/modal-container/modal-container.component';
-import { ModalModule } from '../modal.module';
+import { NavigationEnd, Router } from '@angular/router';
 
-interface IModal{
-  data:any,
-  popupComponent:any
+interface IModal {
+  data: any;
+  popupComponent: any;
 }
 
 @Injectable()
-export class ModalServiceService implements OnInit {
+export class ModalServiceService {
   public modalHost: ViewContainerRef | undefined;
-  private activeModal: ComponentRef<ModalContainerComponent> | undefined;
+  public activeModal: ComponentRef<ModalContainerComponent> | undefined;
   public activeModalVCR: ViewContainerRef | undefined;
   public data: any;
-  private popup:any;
+  private popup: any;
 
-  constructor() {}
+  constructor(private router: Router, private appRef: ApplicationRef) {
+    this.router.events.subscribe((event) => {
+      if (event instanceof NavigationEnd) {
+        this.close();
+      }
+    });
+  }
 
-  setModalHost(modalHost:ViewContainerRef):void{
+  setModalHost(modalHost: ViewContainerRef): void {
     this.modalHost = modalHost;
   }
-  ngOnInit(): void {}
 
-  public setContainerHost(){
+  private async setContainerHost() {
     this.modalHost?.clear();
     this.activeModal = this.modalHost?.createComponent(ModalContainerComponent);
   }
 
-  open(modal:IModal):void{
-    this.data = modal.data;
-    this.popup = modal.popupComponent;
-
-    this.setContainerHost();
-    this.activeModal?.instance.open(this.popup,this.data);
+  open(modal: IModal): Promise<any> {
+    return new Promise(async (resolve) => {
+      setTimeout(async () => {
+        this.data = modal.data;
+        this.popup = modal.popupComponent;
+        await this.setContainerHost();
+        this.setContainerHost();
+        this.activeModal.instance.open(this.popup, this.data);
+        resolve(this.activeModal.instance);
+      });
+    });
   }
 
-  public close():void{
+  getComponentInstance(): any {
+    return this.activeModal.instance;
+  }
+
+  public close(): void {
     this.data = {};
     this.activeModal?.destroy();
   }
 
-  public setData(data:any):void{
+  public setData(data: any): void {
     this.data = data;
   }
-  public getData():any{
+  public getData(): any {
     return this.data;
   }
 }
